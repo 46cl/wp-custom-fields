@@ -1,0 +1,10 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Qscl\\CustomFields\\": "src/lib"
+        }
+    },
+    "require": {
+        "league/plates": "^3.1"
+    }
+}
