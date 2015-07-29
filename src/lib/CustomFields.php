@@ -2,7 +2,8 @@
 
 namespace Qscl\CustomFields;
 
-use Qscl\CustomFields\Wordpress\Plugin;
+use Qscl\CustomFields\Utils\Plugin;
+use Qscl\CustomFields\Utils\Templates;
 
 class CustomFields
 {
@@ -35,7 +36,7 @@ class CustomFields
             'layout' => 'classic'
         ), $options);
 
-        echo TemplateEngine::render('src::sequential', array(
+        echo Templates::render('src::sequential', array(
             'name' => $name,
             'data' => $data,
             'fields' => $fields,
@@ -49,7 +50,7 @@ class CustomFields
     {
         self::init();
 
-        echo TemplateEngine::render('src::upload', array(
+        echo Templates::render('src::upload', array(
             'name' => $name,
             'data' => $data,
             'options' => $options
@@ -62,7 +63,7 @@ class CustomFields
     {
         self::init();
 
-        echo TemplateEngine::render('src::post', array(
+        echo Templates::render('src::post', array(
             'name' => $name,
             'data' => $data,
             'options' => $options
@@ -143,7 +144,7 @@ class CustomFields
         echo '<div boxes-bootstrap>';
 
         // Load Angular templates
-        echo TemplateEngine::render('assets::templates');
+        echo Templates::render('assets::templates');
 
         // First rendering
         if (!self::$renderedOnce) {

@@ -1,11 +1,10 @@
 <?php
 
-namespace Qscl\CustomFields;
+namespace Qscl\CustomFields\Utils;
 
 use League\Plates\Engine as Plates;
-use Qscl\CustomFields\Wordpress\Plugin;
 
-class TemplateEngine
+class Templates
 {
 
     static private $templates = null;

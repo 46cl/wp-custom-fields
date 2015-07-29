@@ -1,6 +1,6 @@
 <?php
 
-namespace Qscl\CustomFields\Wordpress;
+namespace Qscl\CustomFields\Utils;
 
 /**
  * Provide information about the plugin.
