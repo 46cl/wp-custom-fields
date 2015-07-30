@@ -2,6 +2,7 @@
 
 namespace Qscl\CustomFields;
 
+use Qscl\CustomFields\Utils\JSONParams;
 use Qscl\CustomFields\Utils\Plugin;
 use Qscl\CustomFields\Utils\Templates;
 
@@ -26,6 +27,11 @@ class CustomFields
         add_action('wp_ajax_post_box', function() {
             self::postAjax();
         });
+
+        // Decode the POST parameters
+        add_action('wp_loaded', function() {
+            JSONParams::decodeAll();
+        });
     }
 
     static public function sequential($name, $data, $fields, $options = array())
@@ -36,7 +42,7 @@ class CustomFields
             'layout' => 'classic'
         ), $options);
 
-        echo Templates::render('src::sequential', array(
+        echo self::render($name, 'src::sequential', array(
             'name' => $name,
             'data' => $data,
             'fields' => $fields,
@@ -50,7 +56,7 @@ class CustomFields
     {
         self::init();
 
-        echo Templates::render('src::upload', array(
+        echo self::render($name, 'src::upload', array(
             'name' => $name,
             'data' => $data,
             'options' => $options
@@ -63,13 +69,18 @@ class CustomFields
     {
         self::init();
 
-        echo Templates::render('src::post', array(
+        echo self::render($name, 'src::post', array(
             'name' => $name,
             'data' => $data,
             'options' => $options
         ));
 
         self::destroy();
+    }
+
+    static private function render($name, $tpl, $data)
+    {
+        return JSONParams::register($name) . Templates::render($tpl, $data);
     }
 
     static private function uploadAjax()
@@ -84,8 +95,8 @@ class CustomFields
     static private function postAjax()
     {
         $response = null;
-        $id = wp_unslash($_POST['id']);
-        $permalink = wp_unslash($_POST['permalink']);
+        $id = @wp_unslash($_POST['id']);
+        $permalink = @wp_unslash($_POST['permalink']);
 
         if (!empty($id) || !empty($permalink)) {
             $query = array(
