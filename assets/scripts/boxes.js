@@ -161,9 +161,7 @@ jQuery(function() {
                     scope.imageId = id;
 
                     // Update the model value
-                    if (scope.binded) {
-                        NgModelCtrl.$setViewValue(id);
-                    }
+                    if (scope.binded) NgModelCtrl.$setViewValue(id);
 
                     // Retrieve the URL if necessary
                     if (id !== undefined && !url) {
@@ -211,6 +209,11 @@ jQuery(function() {
             scope.openModal = function() {
                 scope.frame = scope.frame || newFrame(select);
                 scope.frame.open();
+            };
+
+            scope.reset = function() {
+                delete scope.imageId;
+                if (scope.binded) NgModelCtrl.$setViewValue(scope.image);
             };
 
             // If the `openModalOnAddition` is set to `true`, open the modal when an item is added.
