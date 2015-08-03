@@ -18,7 +18,7 @@ function upload($name, $data, $options = array())
 Usage example:
 
 ```php
-\Qscl\CustomFields\CustomFields::upload(
+Qscl\CustomFields\CustomFields::upload(
     'my_upload_file',
     get_post_meta($post->ID, 'my_upload_file', true),
     array(
@@ -56,7 +56,7 @@ function post($name, $data, $options = array())
 Usage example:
 
 ```php
-\Qscl\CustomFields\CustomFields::post(
+Qscl\CustomFields\CustomFields::post(
     'my_linked_post',
     get_post_meta($post->ID, 'my_linked_post', true),
     array(
@@ -101,7 +101,7 @@ function sequential($name, $data, $fields, $options = array())
 Usage example:
 
 ```php
-\Qscl\CustomFields\CustomFields::sequential(
+Qscl\CustomFields\CustomFields::sequential(
     'my_sequential_boxes',
     get_post_meta($post->ID, 'my_sequential_boxes', true),
     array(
