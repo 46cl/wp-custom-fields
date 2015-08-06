@@ -101,7 +101,8 @@ class CustomFields
         if (!empty($id) || !empty($permalink)) {
             $query = array(
                 'post_type' => array_keys(get_post_types()),
-                'nopaging' => true
+                'post_status' => 'any',
+                'nopaging' => true,
             );
 
             if (!empty($id)) {
