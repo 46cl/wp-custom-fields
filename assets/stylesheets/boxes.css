@@ -227,7 +227,7 @@
 }
 
 .post-box-modal #wp-link .query-results {
-    top: 38px;
+    top: 38px !important;
 }
 
 .post-box-modal #wp-link .query-notice {
