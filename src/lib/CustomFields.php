@@ -94,15 +94,26 @@ class CustomFields
 
     static private function postAjax()
     {
+        global $polylang;
+
         $response = null;
         $id = @wp_unslash($_POST['id']);
         $permalink = @wp_unslash($_POST['permalink']);
 
         if (!empty($id) || !empty($permalink)) {
+            $langs = null;
+
+            if (isset($polylang)) {
+                $langs = implode(',', array_map(function($lang) {
+                    return $lang->slug;
+                }, $polylang->model->get_languages_list()));
+            }
+
             $query = array(
                 'post_type' => array_keys(get_post_types()),
                 'post_status' => 'any',
                 'nopaging' => true,
+                'lang' => $langs,
             );
 
             if (!empty($id)) {
