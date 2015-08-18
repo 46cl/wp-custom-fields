@@ -213,7 +213,7 @@ jQuery(function() {
 
             scope.reset = function() {
                 delete scope.imageId;
-                if (scope.binded) NgModelCtrl.$setViewValue(scope.image);
+                if (scope.binded) NgModelCtrl.$setViewValue(undefined);
             };
 
             // If the `openModalOnAddition` is set to `true`, open the modal when an item is added.
@@ -367,6 +367,12 @@ jQuery(function() {
                 } else {
                     postFromId(attrs.value);
                 }
+
+                // Register a method to reset the directive state
+                scope.reset = function() {
+                    delete scope.post;
+                    if (scope.binded) NgModelCtrl.$setViewValue(undefined);
+                };
 
                 // Listen to wpLink events
                 ['update', 'close'].forEach(function(eventName) {

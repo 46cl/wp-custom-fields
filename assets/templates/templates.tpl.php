@@ -95,21 +95,23 @@
     <div ng-class="{'without-label': options.hideLabel}" class="post-box">
         <input ng-if="!binded" type="hidden" name="(( name ))" value="(( post.id ))">
 
-        <label>
-            <strong>(( options.label )) <br></strong>
+        <strong>(( options.label )) <br></strong>
 
-            <button ng-click="modal.open()" ng-disabled="loading" class="button-icon" type="button">
-                <span class="dashicons dashicons-edit"></span>
-            </button>
+        <button ng-if="post.title" ng-click="reset()" class="button-icon" type="button">
+            <span class="dashicons dashicons-trash"></span>
+        </button>
 
-            <div ng-class="{'post-box-loading': loading}"
-                 class="post-box-title"
-                 title="(( post.title ))">
-                <span class="spinner"></span>
-                <span ng-if="post.title" ng-bind-html="post.title"></span>
-                <em ng-if="!post.title">Aucun contenu lié</em>
-            </div>
-        </label>
+        <button ng-click="modal.open()" ng-disabled="loading" class="button-icon" type="button">
+            <span class="dashicons dashicons-edit"></span>
+        </button>
+
+        <div ng-class="{'post-box-loading': loading}"
+             class="post-box-title"
+             title="(( post.title ))">
+            <span class="spinner"></span>
+            <span ng-if="post.title" ng-bind-html="post.title"></span>
+            <em ng-if="!post.title">Aucun contenu lié</em>
+        </div>
 
         <!-- The wpLink API always needs an input to output the link -->
         <input ng-attr-id="(( inputId ))" type="text">

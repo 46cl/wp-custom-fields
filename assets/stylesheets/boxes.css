@@ -264,12 +264,12 @@
 
 .post-box .button-icon {
     float: right;
+    margin-left: 4px;
 }
 
 .post-box-title {
     position: relative;
     margin-top: 4px;
-    padding-right: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
