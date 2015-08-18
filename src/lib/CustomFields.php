@@ -122,8 +122,8 @@ class CustomFields
             header('Content-type: application/json');
 
             $response = array(
-                'id' => $posts[0]->ID,
-                'title' => $posts[0]->post_title
+                'id' => @$posts[0]->ID,
+                'title' => @$posts[0]->post_title
             );
         }
 
@@ -132,11 +132,12 @@ class CustomFields
 
     static private function enqueueAssets()
     {
-        // JS dependencies provided by Wordpress
+        // Wordpress dependencies
         wp_enqueue_script('jquery-ui-core');
         wp_enqueue_script('jquery-ui-widget');
         wp_enqueue_script('jquery-ui-mouse');
         wp_enqueue_script('jquery-ui-sortable');
+        wp_enqueue_style('editor-buttons');
         wp_enqueue_media();
 
         // External JS dependencies

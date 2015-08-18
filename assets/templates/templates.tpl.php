@@ -62,7 +62,6 @@
 
 <script type="text/ng-template" id="wp-editor.html">
     <div class="wp-core-ui wp-editor-wrap tmce-active">
-        <link rel="stylesheet" id="editor-buttons-css" href="/wp-includes/css/editor.min.css?ver=4.1.1" type="text/css" media="all" />
         <div class="wp-editor-container">
             <textarea class="wp-editor-area"
                       rows="8"
