@@ -3,7 +3,7 @@
 Plugin Name: 46cl - Custom Fields
 Plugin URI:  https://github.com/46cl/wp-custom-fields
 Description: Custom fields created by 46cl for Wordpress
-Version:     0.2.2
+Version:     0.3.0
 Author:      46cl
 Author URI:  http://46cl.fr
 */
