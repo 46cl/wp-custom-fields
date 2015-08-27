@@ -136,6 +136,17 @@ jQuery(function() {
 
     .directive('uploadBox', ['$http', '$timeout', '$sequentialBoxes', function($http, $timeout, $sequentialBoxes) {
 
+        var filesExtensions = [];
+        filesExtensions['archive'] = ['bz2', 'cab', 'dmg', 'gz', 'rar', 'sea', 'sit', 'sqx', 'tar', 'tgz', 'zip', '7z'];
+        filesExtensions['audio'] = ['aac', 'ac3', 'aif', 'aiff', 'm3a', 'm4a', 'm4b', 'mka', 'mp1', 'mp2', 'mp3', 'ogg', 'oga', 'ram', 'wav', 'wma'];
+        filesExtensions['code'] = ['css', 'htm', 'html', 'php', 'js'];
+        filesExtensions['document'] = ['doc', 'docx', 'docm', 'dotm', 'odt', 'pages', 'pdf', 'xps', 'oxps', 'rtf', 'wp', 'wpd', 'psd', 'xcf'];
+        filesExtensions['image'] = ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp', 'tif', 'tiff', 'ico'];
+        filesExtensions['interactive'] = ['swf', 'key', 'ppt', 'pptx', 'pptm', 'pps', 'ppsx', 'ppsm', 'sldx', 'sldm', 'odp'];
+        filesExtensions['spreadsheet'] = ['numbers', 'ods', 'xls', 'xlsx', 'xlsm', 'xlsb'];
+        filesExtensions['text'] = ['asc', 'csv', 'tsv', 'txt'];
+        filesExtensions['video'] = ['3g2', '3gp', '3gpp', 'asf', 'avi', 'divx', 'dv', 'flv', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'mpv', 'ogm', 'ogv', 'qt', 'rm', 'vob', 'wmv'];
+
         /**
          * A wrapper to manage the media modal
          */
@@ -156,6 +167,27 @@ jQuery(function() {
 
         function link(scope, element, attrs, NgModelCtrl) {
 
+            /**
+             * Return the url of the picture (picture or icon in function of the type of file)
+             */
+            function getUrlPicture(url) {
+                var fileExtension = url.split('.').pop();
+                var file = [];
+                
+                for (var type in filesExtensions) {
+                    if (filesExtensions[type].indexOf(fileExtension) != -1) {
+                        if (type == "image") {
+                            file['imageUrl'] = url;
+                            file['fileName'] = "";
+                        } else {
+                            file['imageUrl'] = scope.imagesDir + type + '.png';
+                            file['fileName'] = url.split('/').pop();
+                        }
+                    }
+                }
+                return file;
+            }
+
             function select(id, url) {
                 $timeout(function() {
                     scope.imageId = id;
@@ -169,10 +201,19 @@ jQuery(function() {
                             action: 'upload_box',
                             id: id
                         }).success(function(url) {
-                            scope.imageUrl = url;
+                            var file = getUrlPicture(url);
+                            scope.imageUrl = file['imageUrl'];
+                            scope.fileName = file['fileName'];
                         });
                     } else {
-                        scope.imageUrl = url;
+                        if (url !== undefined) {
+                            var file = getUrlPicture(url);
+                            scope.imageUrl = file['imageUrl'];
+                            scope.fileName = file['fileName'];
+                        } else {
+                            scope.imageUrl = url;
+                            scope.fileName = "";
+                        }                      
                     }
                 });
             }
@@ -230,7 +271,8 @@ jQuery(function() {
             replace: true,
             require: '?ngModel',
             scope: {
-                name: '@'
+                name: '@',
+                imagesDir: '@'
             },
             templateUrl: 'upload-box.html',
             link: link

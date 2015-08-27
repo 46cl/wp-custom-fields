@@ -59,7 +59,8 @@ class CustomFields
         echo self::render($name, 'src::upload', array(
             'name' => $name,
             'data' => $data,
-            'options' => $options
+            'options' => $options,
+            'imagesDir' => includes_url()."images/media/"
         ));
 
         self::destroy();
@@ -86,10 +87,9 @@ class CustomFields
     static private function uploadAjax()
     {
         $id = wp_unslash($_POST['id']);
-        $imgUrl = wp_get_attachment_image_src($id, 'full')[0];
-
+        $fileUrl = wp_get_attachment_url($id);
         header('Content-type: application/json');
-        die(json_encode($imgUrl));
+        die(json_encode($fileUrl));
     }
 
     static private function postAjax()

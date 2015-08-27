@@ -195,6 +195,23 @@
     content: '';
 }
 
+.upload-box .filename {
+    position: absolute;
+    top: 0;
+    color: black;
+    font-size: 13px;
+    width: 95%;
+    width: calc(100% - 20px);
+    max-width: 95%;
+    max-width: calc(100% - 20px);
+}
+
+.upload-box .filename div{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .upload-box img, .upload-box .upload-box-set {
     vertical-align: middle;
     max-width: 100%;

@@ -76,6 +76,9 @@
 
 <script type="text/ng-template" id="upload-box.html">
     <div class="upload-box">
+        <div class="filename">
+            <div ng-show="imageId !== undefined">(( fileName ))</div>
+        </div>
         <input ng-if="!binded" type="hidden" name="(( name ))" value="(( imageId ))">
         <img ng-show="imageId !== undefined" ng-src="(( imageUrl ))" ng-click="openModal()">
 
