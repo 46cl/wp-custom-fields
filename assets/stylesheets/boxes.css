@@ -217,6 +217,21 @@
     cursor: pointer;
 }
 
+.upload-box .upload-icon {
+    vertical-align: top;
+    height: 35px;
+}
+
+.upload-box .upload-filename {
+    position: absolute;
+    top: 50px;
+    width: calc(100% - 20px);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 /*
  * Post box
  */

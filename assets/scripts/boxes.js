@@ -136,6 +136,26 @@ jQuery(function() {
 
     .directive('uploadBox', ['$http', '$timeout', '$sequentialBoxes', function($http, $timeout, $sequentialBoxes) {
 
+        var filesExtensions = {
+            archive: ['bz2', 'cab', 'dmg', 'gz', 'rar', 'sea', 'sit', 'sqx', 'tar', 'tgz', 'zip', '7z'],
+            audio: [
+                'aac', 'ac3', 'aif', 'aiff', 'm3a', 'm4a', 'm4b', 'mka', 'mp1', 'mp2', 'mp3', 'ogg', 'oga', 'ram',
+                'wav', 'wma'
+            ],
+            code: ['css', 'htm', 'html', 'php', 'js'],
+            document: [
+                'doc', 'docx', 'docm', 'dotm', 'odt', 'pages', 'pdf', 'xps', 'oxps', 'rtf', 'wp', 'wpd', 'psd', 'xcf'
+            ],
+            image: ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp', 'tif', 'tiff', 'ico'],
+            interactive: ['swf', 'key', 'ppt', 'pptx', 'pptm', 'pps', 'ppsx', 'ppsm', 'sldx', 'sldm', 'odp'],
+            spreadsheet: ['numbers', 'ods', 'xls', 'xlsx', 'xlsm', 'xlsb'],
+            text: ['asc', 'csv', 'tsv', 'txt'],
+            video: [
+                '3g2', '3gp', '3gpp', 'asf', 'avi', 'divx', 'dv', 'flv', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg',
+                'mpv', 'ogm', 'ogv', 'qt', 'rm', 'vob', 'wmv'
+            ]
+        };
+
         /**
          * A wrapper to manage the media modal
          */
@@ -156,9 +176,36 @@ jQuery(function() {
 
         function link(scope, element, attrs, NgModelCtrl) {
 
+            /**
+             * Return the url of the picture (picture or icon in function of the type of file)
+             */
+            function setUrlPicture(url) {
+                if (angular.isDefined(url)) {
+                    var fileExtension = url.split('.').pop();
+
+                    for (var type in filesExtensions) {
+                        if (filesExtensions[type].indexOf(fileExtension) != -1) {
+                            if (type == "image") {
+                                scope.file.iconUrl = url;
+                                scope.file.name = "";
+                            } else {
+                                var iconsDir = location.href.slice(0, location.href.indexOf('wp-admin'))
+                                             + 'wp-includes/images/media/';
+
+                                scope.file.iconUrl = iconsDir + type + '.png';
+                                scope.file.name = url.split('/').pop();
+                            }
+                        }
+                    }
+                } else {
+                    scope.file.iconUrl = url;
+                    scope.file.name = "";
+                }
+            }
+
             function select(id, url) {
                 $timeout(function() {
-                    scope.imageId = id;
+                    scope.file.id = id;
 
                     // Update the model value
                     if (scope.binded) NgModelCtrl.$setViewValue(id);
@@ -168,17 +215,22 @@ jQuery(function() {
                         $http.post('/wp-admin/admin-ajax.php', {
                             action: 'upload_box',
                             id: id
-                        }).success(function(url) {
-                            scope.imageUrl = url;
-                        });
+                        }).success(setUrlPicture);
                     } else {
-                        scope.imageUrl = url;
+                        setUrlPicture(url);
                     }
                 });
             }
 
             scope.frame = null;
             scope.binded = angular.isDefined(attrs.ngModel);
+
+            // Elements of the file
+            scope.file = {
+                id: null,
+                name: null,
+                iconUrl: null,
+            };
 
             // Manage options
             scope.options = {
@@ -212,7 +264,7 @@ jQuery(function() {
             };
 
             scope.reset = function() {
-                delete scope.imageId;
+                delete scope.file.id;
                 if (scope.binded) NgModelCtrl.$setViewValue(undefined);
             };
 
