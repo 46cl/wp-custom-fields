@@ -15,18 +15,11 @@ class CustomFields
     static public function load()
     {
         // Enqueue the assets required by the class
-        add_action('admin_enqueue_scripts', function() {
-            self::enqueueAssets();
-        });
+        add_action('admin_enqueue_scripts', function() { self::enqueueAssets(); });
 
         // Register API endpoints
-        add_action('wp_ajax_upload_box', function() {
-            self::uploadAjax();
-        });
-
-        add_action('wp_ajax_post_box', function() {
-            self::postAjax();
-        });
+        add_action('wp_ajax_upload_box', function() { self::uploadAjax(); });
+        add_action('wp_ajax_post_box', function() { self::postAjax(); });
 
         // Decode the POST parameters
         add_action('wp_loaded', function() {
@@ -94,6 +87,7 @@ class CustomFields
     static private function postAjax()
     {
         global $polylang;
+        header('Content-type: application/json');
 
         $response = null;
         $id = @wp_unslash($_POST['id']);
@@ -112,6 +106,9 @@ class CustomFields
                 'post_type' => array_keys(get_post_types()),
                 'post_status' => 'any',
                 'nopaging' => true,
+                'update_post_term_cache' => false,
+                'update_post_meta_cache' => false,
+                'suppress_filters' => true,
                 'lang' => $langs,
             );
 
@@ -128,8 +125,6 @@ class CustomFields
 
                 $posts = array_values($posts);
             }
-
-            header('Content-type: application/json');
 
             $response = array(
                 'id' => @$posts[0]->ID,
