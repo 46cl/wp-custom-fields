@@ -136,16 +136,25 @@ jQuery(function() {
 
     .directive('uploadBox', ['$http', '$timeout', '$sequentialBoxes', function($http, $timeout, $sequentialBoxes) {
 
-        var filesExtensions = [];
-        filesExtensions['archive'] = ['bz2', 'cab', 'dmg', 'gz', 'rar', 'sea', 'sit', 'sqx', 'tar', 'tgz', 'zip', '7z'];
-        filesExtensions['audio'] = ['aac', 'ac3', 'aif', 'aiff', 'm3a', 'm4a', 'm4b', 'mka', 'mp1', 'mp2', 'mp3', 'ogg', 'oga', 'ram', 'wav', 'wma'];
-        filesExtensions['code'] = ['css', 'htm', 'html', 'php', 'js'];
-        filesExtensions['document'] = ['doc', 'docx', 'docm', 'dotm', 'odt', 'pages', 'pdf', 'xps', 'oxps', 'rtf', 'wp', 'wpd', 'psd', 'xcf'];
-        filesExtensions['image'] = ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp', 'tif', 'tiff', 'ico'];
-        filesExtensions['interactive'] = ['swf', 'key', 'ppt', 'pptx', 'pptm', 'pps', 'ppsx', 'ppsm', 'sldx', 'sldm', 'odp'];
-        filesExtensions['spreadsheet'] = ['numbers', 'ods', 'xls', 'xlsx', 'xlsm', 'xlsb'];
-        filesExtensions['text'] = ['asc', 'csv', 'tsv', 'txt'];
-        filesExtensions['video'] = ['3g2', '3gp', '3gpp', 'asf', 'avi', 'divx', 'dv', 'flv', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'mpv', 'ogm', 'ogv', 'qt', 'rm', 'vob', 'wmv'];
+        var filesExtensions = {
+            archive: ['bz2', 'cab', 'dmg', 'gz', 'rar', 'sea', 'sit', 'sqx', 'tar', 'tgz', 'zip', '7z'],
+            audio: [
+                'aac', 'ac3', 'aif', 'aiff', 'm3a', 'm4a', 'm4b', 'mka', 'mp1', 'mp2', 'mp3', 'ogg', 'oga', 'ram',
+                'wav', 'wma'
+            ],
+            code: ['css', 'htm', 'html', 'php', 'js'],
+            document: [
+                'doc', 'docx', 'docm', 'dotm', 'odt', 'pages', 'pdf', 'xps', 'oxps', 'rtf', 'wp', 'wpd', 'psd', 'xcf'
+            ],
+            image: ['jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp', 'tif', 'tiff', 'ico'],
+            interactive: ['swf', 'key', 'ppt', 'pptx', 'pptm', 'pps', 'ppsx', 'ppsm', 'sldx', 'sldm', 'odp'],
+            spreadsheet: ['numbers', 'ods', 'xls', 'xlsx', 'xlsm', 'xlsb'],
+            text: ['asc', 'csv', 'tsv', 'txt'],
+            video: [
+                '3g2', '3gp', '3gpp', 'asf', 'avi', 'divx', 'dv', 'flv', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg',
+                'mpv', 'ogm', 'ogv', 'qt', 'rm', 'vob', 'wmv'
+            ]
+        };
 
         /**
          * A wrapper to manage the media modal
@@ -170,22 +179,25 @@ jQuery(function() {
             /**
              * Return the url of the picture (picture or icon in function of the type of file)
              */
-            function getUrlPicture(url) {
-                var fileExtension = url.split('.').pop();
-                var file = [];
-                
-                for (var type in filesExtensions) {
-                    if (filesExtensions[type].indexOf(fileExtension) != -1) {
-                        if (type == "image") {
-                            file['fileIcon'] = url;
-                            file['fileName'] = "";
-                        } else {
-                            file['fileIcon'] = scope.imagesDir + type + '.png';
-                            file['fileName'] = url.split('/').pop();
+            function setUrlPicture(url) {
+                if (angular.isDefined(url)) {
+                    var fileExtension = url.split('.').pop();
+
+                    for (var type in filesExtensions) {
+                        if (filesExtensions[type].indexOf(fileExtension) != -1) {
+                            if (type == "image") {
+                                scope.file.iconUrl = url;
+                                scope.file.name = "";
+                            } else {
+                                scope.file.iconUrl = scope.imagesDir + type + '.png';
+                                scope.file.name = url.split('/').pop();
+                            }
                         }
                     }
+                } else {
+                    scope.file.iconUrl = url;
+                    scope.file.name = "";
                 }
-                return file;
             }
 
             function select(id, url) {
@@ -200,20 +212,9 @@ jQuery(function() {
                         $http.post('/wp-admin/admin-ajax.php', {
                             action: 'upload_box',
                             id: id
-                        }).success(function(url) {
-                            var file = getUrlPicture(url);
-                            scope.file.iconUrl = file['fileIcon'];
-                            scope.file.name = file['fileName'];
-                        });
+                        }).success(setUrlPicture);
                     } else {
-                        if (url !== undefined) {
-                            var file = getUrlPicture(url);
-                            scope.file.iconUrl = file['fileIcon'];
-                            scope.file.name = file['fileName'];
-                        } else {
-                            scope.file.iconUrl = url;
-                            scope.file.name = "";
-                        }                      
+                        setUrlPicture(url);
                     }
                 });
             }
