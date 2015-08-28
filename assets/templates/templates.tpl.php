@@ -9,7 +9,7 @@
                     <span class="dashicons dashicons-trash"></span>
                 </button>
 
-                <div ng-repeat="field in fields">
+                <div ng-repeat="field in fields"  class="sequential-box-field-((field.name)) sequential-box-field-((field.type))">
                     <ng-include src="(( 'field-' + field.type + '.html' ))"></ng-include>
                 </div>
             </div>
