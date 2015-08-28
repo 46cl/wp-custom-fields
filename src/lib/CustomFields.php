@@ -59,8 +59,7 @@ class CustomFields
         echo self::render($name, 'src::upload', array(
             'name' => $name,
             'data' => $data,
-            'options' => $options,
-            'imagesDir' => includes_url()."images/media/"
+            'options' => $options
         ));
 
         self::destroy();

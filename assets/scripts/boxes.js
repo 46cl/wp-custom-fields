@@ -189,7 +189,10 @@ jQuery(function() {
                                 scope.file.iconUrl = url;
                                 scope.file.name = "";
                             } else {
-                                scope.file.iconUrl = scope.imagesDir + type + '.png';
+                                var iconsDir = location.href.slice(0, location.href.indexOf('wp-admin'))
+                                             + 'wp-includes/images/media/';
+
+                                scope.file.iconUrl = iconsDir + type + '.png';
                                 scope.file.name = url.split('/').pop();
                             }
                         }
@@ -279,8 +282,7 @@ jQuery(function() {
             replace: true,
             require: '?ngModel',
             scope: {
-                name: '@',
-                imagesDir: '@'
+                name: '@'
             },
             templateUrl: 'upload-box.html',
             link: link
