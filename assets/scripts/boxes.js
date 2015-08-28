@@ -177,10 +177,10 @@ jQuery(function() {
                 for (var type in filesExtensions) {
                     if (filesExtensions[type].indexOf(fileExtension) != -1) {
                         if (type == "image") {
-                            file['imageUrl'] = url;
+                            file['fileIcon'] = url;
                             file['fileName'] = "";
                         } else {
-                            file['imageUrl'] = scope.imagesDir + type + '.png';
+                            file['fileIcon'] = scope.imagesDir + type + '.png';
                             file['fileName'] = url.split('/').pop();
                         }
                     }
@@ -190,7 +190,7 @@ jQuery(function() {
 
             function select(id, url) {
                 $timeout(function() {
-                    scope.imageId = id;
+                    scope.file.id = id;
 
                     // Update the model value
                     if (scope.binded) NgModelCtrl.$setViewValue(id);
@@ -202,17 +202,17 @@ jQuery(function() {
                             id: id
                         }).success(function(url) {
                             var file = getUrlPicture(url);
-                            scope.imageUrl = file['imageUrl'];
-                            scope.fileName = file['fileName'];
+                            scope.file.iconUrl = file['fileIcon'];
+                            scope.file.name = file['fileName'];
                         });
                     } else {
                         if (url !== undefined) {
                             var file = getUrlPicture(url);
-                            scope.imageUrl = file['imageUrl'];
-                            scope.fileName = file['fileName'];
+                            scope.file.iconUrl = file['fileIcon'];
+                            scope.file.name = file['fileName'];
                         } else {
-                            scope.imageUrl = url;
-                            scope.fileName = "";
+                            scope.file.iconUrl = url;
+                            scope.file.name = "";
                         }                      
                     }
                 });
@@ -220,6 +220,13 @@ jQuery(function() {
 
             scope.frame = null;
             scope.binded = angular.isDefined(attrs.ngModel);
+
+            // Elements of the file
+            scope.file = {
+                id: null,
+                name: null,
+                iconUrl: null,
+            };
 
             // Manage options
             scope.options = {
@@ -253,7 +260,7 @@ jQuery(function() {
             };
 
             scope.reset = function() {
-                delete scope.imageId;
+                delete scope.file.id;
                 if (scope.binded) NgModelCtrl.$setViewValue(undefined);
             };
 
