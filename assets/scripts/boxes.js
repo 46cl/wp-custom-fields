@@ -48,14 +48,15 @@ jQuery(function() {
             scope.data = [];
 
             try {
+                var data = JSON.parse(scope.dataTxt);
                 // Return empty array if meta data is corrupted
-                if (typeof JSON.parse(scope.dataTxt) !== 'object') {
+                if (!Array.isArray(data)) {
                     scope.data = [];
                 }
                 // Parse the data instead of using two-way binding because UI.sortable can't reorder a two-way binded
                 // array directly outputted in the HTML code
                 else {
-                    scope.data = JSON.parse(scope.dataTxt) || [];
+                    scope.data = data;
                 }
             } catch(e) {}
 
