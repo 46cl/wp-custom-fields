@@ -3,7 +3,7 @@
 namespace Qscl\CustomFields\Utils;
 
 /**
- * Manipulate Post parameters to easily decode JSON values.
+ * Manipulate POST parameters to easily decode JSON values.
  * The custom fields can send JSON values, this class helps to decode those values to PHP's native types.
  */
 class JSONParams {

@@ -4,8 +4,7 @@ namespace Qscl\CustomFields\Utils;
 
 use League\Plates\Engine as Plates;
 
-class Templates
-{
+class Templates {
 
     static private $templates = null;
 

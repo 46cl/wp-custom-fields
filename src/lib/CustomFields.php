@@ -6,8 +6,7 @@ use Qscl\CustomFields\Utils\JSONParams;
 use Qscl\CustomFields\Utils\Plugin;
 use Qscl\CustomFields\Utils\Templates;
 
-class CustomFields
-{
+class CustomFields {
 
     static private $renderedOnce = false;
     static private $originalDirname;
