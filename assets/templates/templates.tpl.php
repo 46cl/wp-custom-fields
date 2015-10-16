@@ -58,6 +58,10 @@
     <post-box options="(( field.options ))" ng-model="dataSet[field.name]"></post-box>
 </script>
 
+<script type="text/ng-template" id="field-color.html">
+    <color-box options="(( field.options ))" ng-model="dataSet[field.name]"></color-box>
+</script>
+
 <!-- WP Editor -->
 
 <script type="text/ng-template" id="wp-editor.html">
@@ -118,5 +122,19 @@
 
         <!-- The wpLink API always needs an input to output the link -->
         <input ng-attr-id="(( inputId ))" type="text">
+    </div>
+</script>
+
+<!-- Color input -->
+
+<script type="text/ng-template" id="color-box.html">
+    <div>
+        <input ng-if="!binded" type="hidden" name="(( name ))" value="(( colorValue ))">
+
+        <input type="hidden">
+        <button class="button color-box" type="button">
+            <span ng-style="{'background-color': colorValue}"></span>
+            (( options.label ))
+        </button>
     </div>
 </script>

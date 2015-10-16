@@ -2,11 +2,10 @@ jQuery(function() {
 
     'use strict';
 
-    var $ = jQuery;
+    var $ = jQuery,
+        wpAdmin = angular.module('wp-admin', ['ui.sortable']);
 
-    angular.module('wp-admin', ['ui.sortable'])
-
-    .config(['$interpolateProvider', '$httpProvider', function($interpolateProvider, $httpProvider) {
+    wpAdmin.config(['$interpolateProvider', '$httpProvider', function($interpolateProvider, $httpProvider) {
         // Avoid Twig conflicts
         $interpolateProvider.startSymbol('((').endSymbol('))');
 
@@ -25,7 +24,7 @@ jQuery(function() {
      * Sequential boxes
      */
 
-    .factory('$sequentialBoxes', function() {
+    wpAdmin.factory('$sequentialBoxes', function() {
         var itemJustAdded = false;
 
         return {
@@ -39,9 +38,9 @@ jQuery(function() {
                 itemJustAdded = value;
             }
         };
-    })
+    });
 
-    .directive('sequentialBoxes', ['$sequentialBoxes', function($sequentialBoxes) {
+    wpAdmin.directive('sequentialBoxes', ['$sequentialBoxes', function($sequentialBoxes) {
 
         function link(scope) {
 
@@ -88,13 +87,13 @@ jQuery(function() {
             link: link
         };
 
-    }])
+    }]);
 
     /*
      * WP Editor
      */
 
-    .directive('wpEditor', function() {
+    wpAdmin.directive('wpEditor', function() {
 
         var link = function(scope, element, attrs, NgModelCtrl) {
             var id = 'boxes-wysiwyg-' + (new Date).getTime();
@@ -135,13 +134,13 @@ jQuery(function() {
             link: link
         };
 
-    })
+    });
 
     /*
      * Upload box
      */
 
-    .directive('uploadBox', ['$http', '$timeout', '$sequentialBoxes', function($http, $timeout, $sequentialBoxes) {
+    wpAdmin.directive('uploadBox', ['$http', '$timeout', '$sequentialBoxes', function($http, $timeout, $sequentialBoxes) {
 
         var filesExtensions = {
             archive: ['bz2', 'cab', 'dmg', 'gz', 'rar', 'sea', 'sit', 'sqx', 'tar', 'tgz', 'zip', '7z'],
@@ -295,13 +294,13 @@ jQuery(function() {
             link: link
         };
 
-    }])
+    }]);
 
     /*
      * Post box
      */
 
-    .directive('postBox', [
+    wpAdmin.directive('postBox', [
         '$rootScope', '$http', '$timeout', '$sce', '$sequentialBoxes',
         function($rootScope, $http, $timeout, $sce, $sequentialBoxes) {
 
@@ -319,7 +318,7 @@ jQuery(function() {
 
             function link(scope, element, attrs, NgModelCtrl) {
 
-                scope.binded = angular.isDefined(attrs.ngModel);;
+                scope.binded = angular.isDefined(attrs.ngModel);
                 scope.inputId = 'post-box-' + lastInputId++;
 
                 // Manage options
@@ -461,6 +460,117 @@ jQuery(function() {
 
         }
     ]);
+
+    /*
+     * Color box
+     */
+
+    $.colorpicker.parts.swatcheslist = function(colorpicker) {
+
+        this.init = function() {
+            var $container = $(colorpicker.dialog).find('.ui-colorpicker-swatcheslist-container'),
+                swatchKey = colorpicker.options.swatches || 'html';
+
+            var colorItems = $.colorpicker.swatches[swatchKey].map(function(swatch) {
+                var rgb = ['r', 'g', 'b'].map(function(channel) {
+                    return Math.round(swatch[channel] * 255);
+                });
+
+                var color = 'rgb(' + rgb.join(',') + ')';
+
+                return [
+                    '<div class="ui-colorpicker-swatch-item" data-color="' + color + '">',
+                        '<div style="background-color: ' + color + '"></div>',
+                        '<span>' + (swatchKey === 'pantone' ? 'Pantone ' :  '') + swatch.name + '</span>',
+                    '</div>',
+                ].join('');
+            }).join('');
+
+            $container.append($('<div>').addClass('ui-colorpicker-swatcheslist').append(colorItems));
+
+            $container.find('.ui-colorpicker-swatch-item').on('click', function(event) {
+                var color = $(event.currentTarget).data('color');
+                colorpicker.color = colorpicker._parseColor(color) || new $.colorpicker.Color();
+                colorpicker._change();
+            });
+        };
+
+    };
+
+    wpAdmin.directive('colorBox', function() {
+
+        function link(scope, element, attrs, NgModelCtrl) {
+
+            scope.binded = angular.isDefined(attrs.ngModel);
+
+            // Manage options
+            scope.options = {
+                label: 'Sélectionner une couleur',
+                hideLabel: false,
+            };
+
+            try {
+                scope.options = $.extend(scope.options, JSON.parse(attrs.options));
+            } catch(e) {}
+
+            // Instanciate the colorpicker
+            var $input = element.find('input'),
+                $button = element.find('button');
+
+            var colorOptions = $.extend(true, {
+                position: {
+                    my: 'left top',
+                    at: 'left bottom',
+                    of: $button,
+                }
+            }, scope.options['jquery.colorpicker']);
+
+            var colorpicker = $input.colorpicker(colorOptions).data('vanderlee-colorpicker');
+
+            colorpicker.option('layout', $.extend(colorpicker.options.layout, {
+                swatcheslist: [5, 0, 1, 5],
+            }));
+
+            // Display the colorpicker when the button is clicked
+            $button.on('click', setTimeout.bind(window, colorpicker.open.bind(colorpicker)));
+
+            // Style the buttons
+            $input.on('colorpickeropen', function(event, args) {
+                args.colorPicker.dialog.find('.ui-button').addClass('button');
+
+                // Refresh the position
+                args.colorPicker.dialog.position(args.colorPicker.options.position);
+            });
+
+            // Manage color value
+            if (scope.binded) {
+                scope.$watch(NgModelCtrl, function() {
+                    scope.colorValue = NgModelCtrl.$modelValue;
+                });
+            } else {
+                scope.colorValue = attrs.value;
+            }
+
+            $input.on('colorpickerselect', function(event, args) {
+                scope.colorValue = '#' + args.formatted;
+                if (scope.binded) NgModelCtrl.$setViewValue(scope.colorValue);
+                scope.$apply();
+            });
+
+        }
+
+        return {
+            restrict: 'E',
+            replace: true,
+            require: '?ngModel',
+            scope: {
+                name: '@'
+            },
+            templateUrl: 'color-box.html',
+            link: link
+        };
+
+    });
 
     /*
      * Bootstrapping

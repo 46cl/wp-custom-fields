@@ -122,6 +122,10 @@
     margin-top: 0;
 }
 
+.sequential-box .color-box {
+    margin: 0 auto 10px auto;
+}
+
 .sequential-box .button-delete {
     position: absolute;
     top: -13px; right: -14px;
@@ -307,4 +311,55 @@
     margin: 0;
     background-position: center center;
     opacity: 1;
+}
+
+/*
+ * Color box
+ */
+
+.color-box {
+    position: relative;
+    display: block !important;
+    margin: 20px 0;
+    padding-left: 40px !important;
+    overflow: hidden;
+}
+
+.color-box span:first-child {
+    position: absolute;
+    top: 0; left: 0;
+    border-right: 1px solid #ccc;
+    width: 29px; height: 100%;
+}
+
+.color-box:hover span:first-child {
+    border-color: #999;
+}
+
+.ui-colorpicker {
+    position: absolute;
+    border: 1px solid #dfdfdf;
+    padding: 10px;
+    background: #fff;
+}
+
+.ui-colorpicker-swatcheslist {
+    max-height: 256px;
+    overflow: auto;
+}
+
+.ui-colorpicker-swatch-item {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.ui-colorpicker-swatch-item div {
+    vertical-align: -3px;
+    display: inline-block;
+    width: 30px; height: 16px;
+}
+
+.ui-colorpicker-swatch-item span {
+    display: inline-block;
+    margin: 0 15px;
 }

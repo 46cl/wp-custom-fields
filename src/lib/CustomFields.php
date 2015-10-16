@@ -71,6 +71,19 @@ class CustomFields
         self::destroy();
     }
 
+    static public function color($name, $data, $options = array())
+    {
+        self::init();
+
+        echo self::render($name, 'src::color', array(
+            'name' => $name,
+            'data' => $data,
+            'options' => $options
+        ));
+
+        self::destroy();
+    }
+
     static private function render($name, $tpl, $data)
     {
         return JSONParams::register($name) . Templates::render($tpl, $data);
@@ -138,22 +151,48 @@ class CustomFields
     static private function enqueueAssets()
     {
         // Wordpress dependencies
-        wp_enqueue_script('jquery-ui-core');
-        wp_enqueue_script('jquery-ui-widget');
-        wp_enqueue_script('jquery-ui-mouse');
-        wp_enqueue_script('jquery-ui-sortable');
+
+        $jqueryUiDeps = [
+            'jquery-ui-core',
+            'jquery-ui-widget',
+            'jquery-ui-position',
+            'jquery-ui-button',
+            'jquery-ui-mouse',
+            'jquery-ui-draggable',
+            'jquery-ui-sortable',
+        ];
+
         wp_enqueue_style('editor-buttons');
+        array_map('wp_enqueue_script', $jqueryUiDeps);
         wp_enqueue_media();
 
-        // External JS dependencies
+        // External dependencies
+
         wp_enqueue_script('boxes-angular', 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.13/angular.min.js');
-        wp_enqueue_script('boxes-ui-sortable', 'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-sortable/0.13.3/sortable.min.js');
+        wp_enqueue_script(
+            'boxes-ui-sortable',
+            'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-sortable/0.13.3/sortable.min.js',
+            $jqueryUiDeps
+        );
 
-        // Our own scripts
-        wp_enqueue_script('boxes-admin', Plugin::getPath(Plugin::HTTP_PATH) . '/assets/scripts/boxes.js');
+        wp_enqueue_style(
+            'boxes-colorpicker',
+            Plugin::getPath(Plugin::HTTP_PATH) . '/assets/stylesheets/vendor/jquery.colorpicker.css'
+        );
+        wp_enqueue_script(
+            'boxes-colorpicker',
+            Plugin::getPath(Plugin::HTTP_PATH) . '/assets/scripts/vendor/jquery.colorpicker.js',
+            $jqueryUiDeps
+        );
+        wp_enqueue_script(
+            'boxes-colorpicker-pantone',
+            Plugin::getPath(Plugin::HTTP_PATH) . '/assets/scripts/vendor/jquery.colorpicker.pantone.js'
+        );
 
-        // Our own stylesheets
+        // Internal dependencies
+
         wp_enqueue_style('boxes-admin', Plugin::getPath(Plugin::HTTP_PATH) . '/assets/stylesheets/boxes.css');
+        wp_enqueue_script('boxes-admin', Plugin::getPath(Plugin::HTTP_PATH) . '/assets/scripts/boxes.js');
     }
 
     static private function init()

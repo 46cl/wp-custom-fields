@@ -84,6 +84,49 @@ Qscl\CustomFields\CustomFields::post(
 );
 ```
 
+## Color box
+
+Outputs a component used to choose a color:
+
+```php
+/**
+ * @param  {string} $name    The name of the input
+ * @param  {array}  $data    The data
+ * @param  {array}  $options An array of options
+ */
+function post($name, $data, $options = array())
+```
+
+Usage example:
+
+```php
+Qscl\CustomFields\CustomFields::color(
+    'my_color',
+    get_post_meta($post->ID, 'my_color', true),
+    array(
+
+        /**
+         * Defines the text used for the label.
+         * Defaults to: "Sélectionner une couleur"
+         */
+        'label' => 'Add a new file',
+
+        /**
+         * A set of options handled by the jQuery.Colorpicker library.
+         * Defaults to: []
+         * @see http://vanderlee.github.io/colorpicker/ jQuery.Colorpicker's documentation
+         */
+        'jquery.colorpicker' => [
+            // The following part is a custom one created for this project and
+            // provides another presentation for swatches, feel free to use it
+            // if necessary.
+            'parts' => ['swatcheslist']
+        ],
+
+    )
+);
+```
+
 ## Sequential boxes
 
 Outputs a UI allowing the user to add multiple times a predefined set of fields:
