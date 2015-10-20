@@ -1,9 +1,8 @@
-jQuery(function() {
+jQuery(function($) {
 
     'use strict';
 
-    var $ = jQuery,
-        wpAdmin = angular.module('wp-admin', ['ui.sortable']);
+    var wpAdmin = angular.module('wp-admin', ['ui.sortable']);
 
     wpAdmin.config(['$interpolateProvider', '$httpProvider', function($interpolateProvider, $httpProvider) {
         // Avoid Twig conflicts
@@ -497,6 +496,43 @@ jQuery(function() {
 
     };
 
+    $.colorpicker.parsers.CMYK = function(color) {
+        var match = /^cmyk\(\s*(\d{1,3})%?\s*,\s*(\d{1,3})%?\s*,\s*(\d{1,3})%?\s*,\s*(\d{1,3})%?\s*\)$/.exec(color);
+
+        if (match) {
+            var color = new $.colorpicker.Color,
+                channels = match.slice(1).map(function(channel) {
+                    return channel / 100;
+                });
+
+            return color.setCMYK.apply(color, channels);
+        }
+    };
+
+    $.colorpicker.writers.CMYK = function(color, colorpicker) {
+        color = color.getCMYK();
+        return [
+            'cmyk(',
+                Math.round(color.c * 100) + ',',
+                Math.round(color.m * 100) + ',',
+                Math.round(color.y * 100) + ',',
+                Math.round(color.k * 100),
+            ')',
+        ].join('');
+    };
+
+    $.colorpicker.writers['CMYK%'] = function(color, colorpicker) {
+        color = color.getCMYK();
+        return [
+            'cmyk(',
+                Math.round(color.c * 100) + '%,',
+                Math.round(color.m * 100) + '%,',
+                Math.round(color.y * 100) + '%,',
+                Math.round(color.k * 100) + '%',
+            ')',
+        ].join('');
+    };
+
     wpAdmin.directive('colorBox', function() {
 
         function link(scope, element, attrs, NgModelCtrl) {
@@ -535,25 +571,84 @@ jQuery(function() {
             $button.on('click', setTimeout.bind(window, colorpicker.open.bind(colorpicker)));
 
             // Style the buttons
-            $input.on('colorpickeropen', function(event, args) {
-                args.colorPicker.dialog.find('.ui-button').addClass('button');
+            $input.on('colorpickeropen', function() {
+                colorpicker.dialog.find('.ui-button').addClass('button');
 
                 // Refresh the position
-                args.colorPicker.dialog.position(args.colorPicker.options.position);
+                colorpicker.dialog.position(colorpicker.options.position);
             });
 
             // Manage color value
+            function formatsToColor(formats, formatNames) {
+                if (!angular.isDefined(formats)) return;
+                formatNames = formatNames || scope.options.formats;
+
+                function validColorFilter(color) {
+                    return color;
+                }
+
+                function parseFormat(format) {
+                    var parsers = $.colorpicker.parsers;
+
+                    return Object.keys(parsers).map(function(parserName) {
+                        return parsers[parserName](format, colorpicker);
+                    }).filter(validColorFilter)[0];
+                }
+
+                if (!Array.isArray(formatNames)) {
+                    return parseFormat(formats);
+                } else {
+                    return Object.keys(formats).map(function(formatKey) {
+                        return parseFormat(formats[formatKey]);
+                    }).filter(validColorFilter)[0];
+                }
+            }
+
+            function colorToFormats(colorObj, formatNames) {
+                formatNames = formatNames || scope.options.formats;
+
+                if (!Array.isArray(formatNames)) {
+                    var writer = $.colorpicker.writers[String(formatNames).toUpperCase()];
+                    return writer ? writer(colorObj, colorpicker) : null;
+                } else {
+                    return formatNames.reduce(function(output, formatName) {
+                        var writer = $.colorpicker.writers[String(formatName).toUpperCase()];
+                        output[formatName] = writer ? writer(colorObj, colorpicker) : null;
+                        return output;
+                    }, {});
+                }
+            }
+
+            function convertFormatsTo(formats, formatsNames) {
+                var color = formatsToColor(NgModelCtrl.$modelValue);
+                if (color) return colorToFormats(color, formatsNames);
+            }
+
+            function applyFormats(formats) {
+                setTimeout(function() {
+                    scope.colorFormats = formats;
+
+                    var rgbColor = convertFormatsTo(formats, 'rgb');
+                    scope.colorValue = rgbColor;
+                    colorpicker.setColor(rgbColor);
+                }, 0);
+            }
+
             if (scope.binded) {
-                scope.$watch(NgModelCtrl, function() {
-                    scope.colorValue = NgModelCtrl.$modelValue;
-                });
+                scope.$watch(NgModelCtrl, applyFormats.bind(this, NgModelCtrl.$modelValue));
             } else {
-                scope.colorValue = attrs.value;
+                applyFormats.bind(this, attrs.value);
             }
 
             $input.on('colorpickerselect', function(event, args) {
-                scope.colorValue = '#' + args.formatted;
-                if (scope.binded) NgModelCtrl.$setViewValue(scope.colorValue);
+                var colorObj = colorpicker.color;
+
+                scope.colorValue = $.colorpicker.writers.RGB(colorObj, colorpicker);
+                scope.colorFormats = angular.isDefined(scope.options.formats)
+                                   ? colorToFormats(colorObj)
+                                   : '#' + args.formatted;
+
+                if (scope.binded) NgModelCtrl.$setViewValue(scope.colorFormats);
                 scope.$apply();
             });
 

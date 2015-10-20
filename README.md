@@ -109,7 +109,27 @@ Qscl\CustomFields\CustomFields::color(
          * Defines the text used for the label.
          * Defaults to: "Sélectionner une couleur"
          */
-        'label' => 'Add a new file',
+        'label' => 'Add a new color',
+
+        /**
+         * Defines what format(s) you want to output. You can provide a single
+         * format as a string or multiple formats as an array of strings. The
+         * available formats are the ones listed for the `colorFormat` option in
+         * jQuery.Colorpicker's documentation.
+         *
+         * This option is useful when you want to get a structured object containing
+         * all the formats you asked for, and not only one of them.
+         *
+         * Note that using this option will OVERRIDE any value provided to
+         * `colorFormat` in jQuery.Colorpicker's options.
+         *
+         * Defaults to: null
+         * @see http://vanderlee.github.io/colorpicker/ jQuery.Colorpicker's documentation
+         */
+        'formats' => [
+            // The `CMYK` and `CMYK%` formats are also available.
+            'CMYK', 'CMYK%',
+        ],
 
         /**
          * A set of options handled by the jQuery.Colorpicker library.
@@ -120,7 +140,7 @@ Qscl\CustomFields\CustomFields::color(
             // The following part is a custom one created for this project and
             // provides another presentation for swatches, feel free to use it
             // if necessary.
-            'parts' => ['swatcheslist']
+            'parts' => ['swatcheslist'],
         ],
 
     )
@@ -155,7 +175,7 @@ Qscl\CustomFields\CustomFields::sequential(
         array(
             'type' => 'text',
             'name' => 'my_input_text',
-            'label' => 'My input text'
+            'label' => 'My input text',
         ),
 
         /**
@@ -164,7 +184,7 @@ Qscl\CustomFields\CustomFields::sequential(
         array(
             'type' => 'textarea',
             'name' => 'my_textarea',
-            'label' => 'My textarea'
+            'label' => 'My textarea',
         ),
 
         /**
@@ -172,7 +192,7 @@ Qscl\CustomFields\CustomFields::sequential(
          */
         array(
             'type' => 'wysiwyg',
-            'name' => 'my_wysiwyg'
+            'name' => 'my_wysiwyg',
         ),
 
         /**
@@ -183,8 +203,8 @@ Qscl\CustomFields\CustomFields::sequential(
             'name' => 'my_upload_box',
             'options' => array(
                 'label' => 'My upload box',
-                'openModalOnAddition' => true
-            )
+                'openModalOnAddition' => true,
+            ),
         ),
 
         /**
@@ -196,8 +216,24 @@ Qscl\CustomFields\CustomFields::sequential(
             'options' => array(
                 'label' => 'My post box',
                 'openModalOnAddition' => true,
-                'hideLabel' => true
-            )
+                'hideLabel' => true,
+            ),
+        ),
+
+        /**
+         * A color box
+         */
+        array(
+            'type' => 'color',
+            'name' => 'my_color_box',
+            'options' => array(
+                'label' => 'Add a new color',
+                'formats' => ['CMYK', 'CMYK%'],
+
+                'jquery.colorpicker' => [
+                    'parts' => ['swatcheslist'],
+                ],
+            ),
         ),
 
     ),
