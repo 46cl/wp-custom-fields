@@ -468,9 +468,18 @@ jQuery(function($) {
 
         this.init = function() {
             var $container = $(colorpicker.dialog).find('.ui-colorpicker-swatcheslist-container'),
-                swatchKey = colorpicker.options.swatches || 'html';
+                swatchesKey = colorpicker.options.swatches || 'html',
+                swatches;
 
-            var colorItems = $.colorpicker.swatches[swatchKey].map(function(swatch) {
+            if (angular.isString(swatchesKey)) {
+                swatches = $.colorpicker.swatches[swatchesKey];
+            } else {
+                swatches = Object.keys(swatchesKey).map(function(name) {
+                    return $.extend(swatchesKey[name], { name: name });
+                });
+            }
+
+            var colorItems = swatches.map(function(swatch) {
                 var rgb = ['r', 'g', 'b'].map(function(channel) {
                     return Math.round(swatch[channel] * 255);
                 });
@@ -480,7 +489,7 @@ jQuery(function($) {
                 return [
                     '<div class="ui-colorpicker-swatch-item" data-color="' + color + '">',
                         '<div style="background-color: ' + color + '"></div>',
-                        '<span>' + (swatchKey === 'pantone' ? 'Pantone ' :  '') + swatch.name + '</span>',
+                        '<span>' + (swatchesKey === 'pantone' ? 'Pantone ' :  '') + swatch.name + '</span>',
                     '</div>',
                 ].join('');
             }).join('');
