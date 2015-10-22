@@ -634,6 +634,8 @@ jQuery(function($) {
             }
 
             function applyFormats(formats) {
+                if (!formats) return;
+
                 setTimeout(function() {
                     scope.colorFormats = formats;
 
@@ -644,9 +646,11 @@ jQuery(function($) {
             }
 
             if (scope.binded) {
-                scope.$watch(NgModelCtrl, applyFormats.bind(this, NgModelCtrl.$modelValue));
+                scope.$watch(NgModelCtrl, function() {
+                    applyFormats(NgModelCtrl.$modelValue);
+                });
             } else {
-                applyFormats.bind(this, attrs.value);
+                applyFormats(attrs.value);
             }
 
             $input.on('colorpickerselect', function(event, args) {
