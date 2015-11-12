@@ -614,15 +614,14 @@ jQuery(function($) {
             }
 
             function colorToFormats(colorObj, formatNames) {
-                formatNames = formatNames || scope.options.formats;
+                formatNames = formatNames || scope.formats;
 
                 if (!Array.isArray(formatNames)) {
                     var writer = $.colorpicker.writers[String(formatNames).toUpperCase()];
                     return writer ? writer(colorObj, colorpicker) : null;
                 } else {
                     return formatNames.reduce(function(output, formatName) {
-                        var writer = $.colorpicker.writers[String(formatName).toUpperCase()];
-                        output[formatName] = writer ? writer(colorObj, colorpicker) : null;
+                        output[formatName] = colorToFormats(colorObj, formatName);
                         return output;
                     }, {});
                 }
