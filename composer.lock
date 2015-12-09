@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "668cbc83426c57cac1219a153767ba4e",
+    "hash": "2a0938bc280e4b1f3b326473ec01db7e",
+    "content-hash": "9b8b6240a4ec37578046e44343759dd1",
     "packages": [
         {
             "name": "league/plates",
