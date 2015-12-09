@@ -614,7 +614,7 @@ jQuery(function($) {
             }
 
             function colorToFormats(colorObj, formatNames) {
-                formatNames = formatNames || scope.formats;
+                formatNames = formatNames || scope.options.formats;
 
                 if (!Array.isArray(formatNames)) {
                     var writer = $.colorpicker.writers[String(formatNames).toUpperCase()];
