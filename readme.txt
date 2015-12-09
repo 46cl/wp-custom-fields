@@ -3,7 +3,7 @@ Contributors: 46cl
 Tags: 46cl, custom, fields
 Requires at least: 4.2.0
 Tested up to: 4.2.3
-Stable tag: 0.4.0
+Stable tag: 0.4.1
 License: MIT
 License URI: http://opensource.org/licenses/MIT
 
