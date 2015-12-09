@@ -27,61 +27,77 @@ class CustomFields
         });
     }
 
-    static public function sequential($name, $data, $fields, $options = array())
+    static public function sequential($name, $data, $fields, $options = array(), $returnHtml = false)
     {
-        self::init();
+        $output = self::init($returnHtml);
 
         $options = array_merge(array(
             'layout' => 'classic'
         ), $options);
 
-        echo self::render($name, 'src::sequential', array(
+        $output .= self::render($name, 'src::sequential', array(
             'name' => $name,
             'data' => $data,
             'fields' => $fields,
-            'options' => $options
+            'options' => $options,
         ));
 
-        self::destroy();
+        if (!$returnHtml) echo $output;
+
+        $output .= self::destroy($returnHtml);
+
+        if ($returnHtml) return $output;
     }
 
-    static public function upload($name, $data, $options = array())
+    static public function upload($name, $data, $options = array(), $returnHtml = false)
     {
-        self::init();
+        $output = self::init($returnHtml);
 
-        echo self::render($name, 'src::upload', array(
+        $output .= self::render($name, 'src::upload', array(
             'name' => $name,
             'data' => $data,
-            'options' => $options
+            'options' => $options,
         ));
 
-        self::destroy();
+        if (!$returnHtml) echo $output;
+
+        $output .= self::destroy($returnHtml);
+
+        if ($returnHtml) return $output;
     }
 
-    static public function post($name, $data, $options = array())
+    static public function post($name, $data, $options = array(), $returnHtml = false)
     {
-        self::init();
+        $output = self::init($returnHtml);
 
-        echo self::render($name, 'src::post', array(
+        $output .= self::render($name, 'src::post', array(
             'name' => $name,
             'data' => $data,
-            'options' => $options
+            'options' => $options,
         ));
 
-        self::destroy();
+        if (!$returnHtml) echo $output;
+
+        $output .= self::destroy($returnHtml);
+
+        if ($returnHtml) return $output;
     }
 
-    static public function color($name, $data, $options = array())
+    static public function color($name, $data, $options = array(), $returnHtml = false)
     {
-        self::init();
+        $output = self::init($returnHtml);
 
-        echo self::render($name, 'src::color', array(
+        $output .= self::render($name, 'src::color', array(
             'name' => $name,
             'data' => $data,
-            'options' => $options
+            'options' => $options,
         ));
 
-        self::destroy();
+        if (!$returnHtml) echo $output;
+
+        $output .= self::destroy($returnHtml);
+
+        if ($returnHtml) return $output;
     }
 
     static private function render($name, $tpl, $data)
@@ -195,13 +211,13 @@ class CustomFields
         wp_enqueue_script('boxes-admin', Plugin::getPath(Plugin::HTTP_PATH) . '/assets/scripts/boxes.js');
     }
 
-    static private function init()
+    static private function init($returnHtml = false)
     {
         // Open a wrapper used to bootstrap the boxes inside
-        echo '<div boxes-bootstrap>';
+        $output = '<div boxes-bootstrap>';
 
         // Load Angular templates
-        echo Templates::render('assets::templates');
+        $output .= Templates::render('assets::templates');
 
         // First rendering
         if (!self::$renderedOnce) {
@@ -214,12 +230,26 @@ class CustomFields
             wp_editor('hello', '__boxes_defaults');
             ob_end_clean();
         }
+
+        if ($returnHtml) {
+            return $output;
+        } else {
+            echo $output;
+            return '';
+        }
     }
 
-    static private function destroy()
+    static private function destroy($returnHtml = false)
     {
         // Close the wrapper
-        echo '</div>';
+        $output = '</div>';
+
+        if ($returnHtml) {
+            return $output;
+        } else {
+            echo $output;
+            return '';
+        }
     }
 
 }
